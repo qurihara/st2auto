@@ -1,0 +1,22 @@
+{
+  "name": "st2auto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qurihara/st2auto.git"
+  },
+  "author": "Kazutaka Kurihara",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qurihara/st2auto/issues"
+  },
+  "homepage": "https://github.com/qurihara/st2auto#readme",
+  "dependencies": {
+    "machina": "^2.0.2"
+  }
+}
