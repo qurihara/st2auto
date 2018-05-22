@@ -1,4 +1,5 @@
-var machina = require('machina');
+//var machina = require('machina');
+var machina = require('./node_modules/machina/lib/machina.js')
 
 var Ryu = machina.Fsm.extend({
   initialState: 'N',
