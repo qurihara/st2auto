@@ -1,5 +1,6 @@
 //var machina = require('machina');
 var machina = require('./node_modules/machina/lib/machina.js')
+var isCanceled = false;
 
 var Ryu = machina.Fsm.extend({
   initialState: 'N',
@@ -8,23 +9,23 @@ var Ryu = machina.Fsm.extend({
       fight: async function() { // その状態が扱う振る舞い（関数）
         console.log('neutral');
         await send("hello");
-        await wait(500);
+        await wait_with_flag(2000,isCanceled);
         await send(" world ");
-        await wait(500);
+        await wait_with_flag(2000,isCanceled);
       }
     },
     'Hado': {
       fight: async function() {
         console.log('Hado');
         await send("Hadoken");
-        await wait(500);
+        await wait_with_flag(2000,isCanceled);
       }
     },
     'Shoryu': {
       fight: async function() {
         console.log('Shoryu');
         await send("Shoryuken");
-        await wait(500);
+        await wait_with_flag(2000,isCanceled);
       }
     },
   },
@@ -39,10 +40,11 @@ var Ryu = machina.Fsm.extend({
 async function main(){
   var ryu = new Ryu();
   ryu.fight();
-  await wait(1000);
+  await wait_with_flag(1000,isCanceled);
+  isCanceled = false;
   await ryu.shift('Hado');
   await ryu.fight();
-  await wait(1000);
+  await wait_with_flag(2000,isCanceled);
   await ryu.shift('Shoryu');
   await ryu.fight();
 }
@@ -61,6 +63,31 @@ function send(GCDSL){
     // });
   });
 }
+
+function wait_with_flag(delay,isCanceled) {
+    return new Promise(function(resolve, reject) {
+        if(isCanceled === true){
+            reject();
+        }else{
+          setTimeout(resolve, delay);
+        }
+    });
+}
+
+// function wait_with_flag(delay,isCanceled) {
+//   return new Promise(function(resolve, reject) {
+//       setTimeout(
+//         function(resolve, reject,isCanceled) {
+//           if(isCanceled === true){
+//             reject();
+//           }else{
+//             resolve();
+//           }
+//         }
+//         , delay);
+//   });
+// }
+
 
 // const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 function wait(delay) {
