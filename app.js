@@ -9,23 +9,23 @@ var Ryu = machina.Fsm.extend({
       fight: async function() { // その状態が扱う振る舞い（関数）
         console.log('neutral');
         await send("hello");
-        await wait_with_flag(2000,isCanceled);
+        await wait(2000);
         await send(" world ");
-        await wait_with_flag(2000,isCanceled);
+        await wait(2000);
       }
     },
     'Hado': {
       fight: async function() {
         console.log('Hado');
         await send("Hadoken");
-        await wait_with_flag(2000,isCanceled);
+        await wait(2000);
       }
     },
     'Shoryu': {
       fight: async function() {
         console.log('Shoryu');
         await send("Shoryuken");
-        await wait_with_flag(2000,isCanceled);
+        await wait(2000);;
       }
     },
   },
@@ -40,11 +40,11 @@ var Ryu = machina.Fsm.extend({
 async function main(){
   var ryu = new Ryu();
   ryu.fight();
-  await wait_with_flag(1000,isCanceled);
+  await wait(2000);
   isCanceled = false;
   await ryu.shift('Hado');
   await ryu.fight();
-  await wait_with_flag(2000,isCanceled);
+  await wait(2000);
   await ryu.shift('Shoryu');
   await ryu.fight();
 }
@@ -52,8 +52,12 @@ main();
 
 function send(GCDSL){
   return new Promise(function(resolve, reject) {
-    console.log(GCDSL);
-    resolve();
+    if (isCanceled === false){
+      console.log(GCDSL);
+      resolve();
+    }else{
+      reject();
+    }
     // SEND(function(err,data){
     //   if (!err){
     //     resolve(data);
