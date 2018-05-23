@@ -103,6 +103,14 @@ function send(ifStateIs, GCDSL){
     // if (isCanceled === false){
     if (ifStateIs === player.state){
       console.log(GCDSL);
+
+      try{
+        // publish control message
+        if (MQTT_CLIENT && MQTT_CLIENT.isConnected()){
+          MQTT_CLIENT.publish("gamepad", GCDSL);
+        }
+      }catch(err){}
+
       resolve();
     }else{
       console.log(GCDSL);
