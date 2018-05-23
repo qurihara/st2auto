@@ -10,56 +10,59 @@ var player = machina.Fsm.extend({
       fight: async function() { // その状態が扱う振る舞い（関数）
         console.log('back mode');
         try{
-          await send('back', "backing");
+          await send('back', com.dslStr(com.btns.left,com.btns.nobtn,-1));//"backing");
           await wait(2000);
-          await shift('back','back');
+          // await shift('back','back');
           await this.handle('fight');
-        }catch (canceled) {
-          console.log(canceled)
-        }
-      }
+        }catch (canceled) {}
+      },
+      _onExit: async function() {
+        await send('back', com.dslStr(com.btns.left,com.btns.nobtn,2));
+      },
     },
     'sonic': {
       fight: async function() {
         console.log('sonic mode');
         try{
-          await send('sonic', "sonicboom!");
-          await send('sonic', "and machi!");
+          await send('sonic', com.dslStr(com.btns.right,com.btns.lp,2));//"sonicboom!");
+          await send('sonic', com.dslStr(com.btns.downleft,com.btns.nobtn,-1));//"and machi!");
           await wait(2000);
-          await shift('sonic','sonic');
+          // await shift('sonic','sonic');
           await this.handle('fight');
-        }catch (canceled) {
-          console.log(canceled)
-        }
-      }
+        }catch (canceled) {}
+      },
+      _onExit: async function() {
+        await send('sonic', com.dslStr(com.btns.downleft,com.btns.nobtn,2));
+      },
     },
     'summer': {
       fight: async function() {
         console.log('summer mode');
         try{
-          await send('summer', "summersolt!");
-          await send('summer', "and machi!");
+          await send('summer', com.dslStr(com.btns.up,com.btns.lk,2));// "summersolt!");
+          await send('summer', com.dslStr(com.btns.downleft,com.btns.nobtn,-1));// "and machi!");
           await wait(2000);
-          await shift('summer','summer');
+          // await shift('summer','summer');
           await this.handle('fight');
-        }catch (canceled) {
-          console.log(canceled)
-        }
-      }
+        }catch (canceled) {}
+      },
+      _onExit: async function() {
+        await send('summer', com.dslStr(com.btns.downleft,com.btns.nobtn,2));
+      },
     },
     'attack': {
       fight: async function() {
         console.log('atack mode');
         try{
-          await send('attack', "jump!");
+          await send('attack', com.dslStr(com.btns.upright,com.btns.nobtn,2));// "jump!");
           await wait(500);
-          await send('attack', "and attack!");
+          await send('attack', com.dslStr(com.btns.neutral,com.btns.lk,2));// "and attack!");
           await shift('attack','back');
           await this.handle('fight');
-        }catch (canceled) {
-          console.log(canceled)
-        }
-      }
+        }catch (canceled) {}
+      },
+      _onExit: async function() {
+      },
     },
   },
     fight: async function() {
@@ -102,6 +105,7 @@ function send(ifStateIs, GCDSL){
       console.log(GCDSL);
       resolve();
     }else{
+      console.log(GCDSL);
       reject("canceled.");
     }
   });

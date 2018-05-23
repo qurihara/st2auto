@@ -12,17 +12,18 @@ exports.btns = {
   down:2,
   downright:3,
   left:4,
-  newtral:5,
+  neutral:5,
   right:6,
   upleft:7,
   up:8,
   upright:9,
-  l:64,
-  r:128,
-  x:8,
-  y:16,
-  a:1,
-  b:2,
+  nobtn:0, //no button
+  sk:64, //small kick
+  sp:128,//small punch
+  lp:8,//large punch
+  mp:16,//midium punch
+  mk:1,//midium kick
+  lk:2,//large kick
   select:1024,
   start:2048,
   ppp:152,
