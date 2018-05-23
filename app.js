@@ -12,6 +12,9 @@ var player = machina.Fsm.extend({
         try{
           await send('back', com.dslStr(com.btns.left,com.btns.nobtn,-1));//"backing");
           await wait(2000);
+          await send('back', com.dslStr(com.btns.right,com.btns.nobtn,-1));//"backing");
+          await wait(1000);
+          await send('back', com.dslStr(com.btns.downleft,com.btns.lp,2));//"backing");
           // await shift('back','back');
           await this.handle('fight');
         }catch (canceled) {}
