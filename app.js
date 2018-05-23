@@ -1,83 +1,109 @@
 //var machina = require('machina');
-var machina = require('./node_modules/machina/lib/machina.js')
-// var isCanceled = false;
-var ryu;
+var machina = require('./node_modules/machina/lib/machina.min.js')
+var com = require('./commands.js');
+var player;
 
-var Ryu = machina.Fsm.extend({
-  initialState: 'N',
+var player = machina.Fsm.extend({
+  initialState: 'back',
   states: {  // 状態を定義
-    'N': {  // 各状態
+    'back': {  // 各状態
       fight: async function() { // その状態が扱う振る舞い（関数）
-        console.log('neutral');
+        console.log('back mode');
         try{
-          await send('N', "hello");
+          await send('back', "backing");
           await wait(2000);
-          await send('N', " world ");
-          await wait(2000);
-        }catch (err) {
-          console.log(err)
+          await shift('back','back');
+          await this.handle('fight');
+        }catch (canceled) {
+          console.log(canceled)
         }
       }
     },
-    'Hado': {
+    'sonic': {
       fight: async function() {
-        console.log('Hado');
-        await send('Hado', "Hadoken");
-        await wait(2000);
+        console.log('sonic mode');
+        try{
+          await send('sonic', "sonicboom!");
+          await send('sonic', "and machi!");
+          await wait(2000);
+          await shift('sonic','sonic');
+          await this.handle('fight');
+        }catch (canceled) {
+          console.log(canceled)
+        }
       }
     },
-    'Shoryu': {
+    'summer': {
       fight: async function() {
-        console.log('Shoryu');
-        await send('Shoryu', "Shoryuken");
-        await wait(2000);;
+        console.log('summer mode');
+        try{
+          await send('summer', "summersolt!");
+          await send('summer', "and machi!");
+          await wait(2000);
+          await shift('summer','summer');
+          await this.handle('fight');
+        }catch (canceled) {
+          console.log(canceled)
+        }
+      }
+    },
+    'attack': {
+      fight: async function() {
+        console.log('atack mode');
+        try{
+          await send('attack', "jump!");
+          await wait(500);
+          await send('attack', "and attack!");
+          await shift('attack','back');
+          await this.handle('fight');
+        }catch (canceled) {
+          console.log(canceled)
+        }
       }
     },
   },
-    fight: function() {
+    fight: async function() {
       this.handle('fight');
     },
-    shift: function(newS) {
+    shift: async function(newS) {
       this.transition(newS);
     },
 });
 
 async function main(){
-  ryu = new Ryu();
-  ryu.fight();
-  await wait(1000);
-  // await setIsCanceled(true);
-  await ryu.shift('Hado');
-  await ryu.fight();
-  await wait(2000);
-  await ryu.shift('Shoryu');
-  await ryu.fight();
+  player = new player();
+  player.fight();
+  await wait(5000);
+  await player.shift('sonic');
+  await player.fight();
+  await wait(5000);
+  await player.shift('summer');
+  await player.fight();
+  await wait(5000);
+  await player.shift('attack');
+  await player.fight();
 }
 main();
 
-// function setIsCanceled(_isCanceled){
-//   return new Promise(function(resolve, reject) {
-//       isCanceled = _isCanceled;
-//       resolve();
-//   });
-// }
-
+function shift(ifStateIs, newState){
+  return new Promise(function(resolve, reject) {
+    if (ifStateIs === player.state){
+      player.shift(newState);
+      resolve();
+    }else{
+      reject("canceled.");
+    }
+  });
+}
 function send(ifStateIs, GCDSL){
   return new Promise(function(resolve, reject) {
     // if (isCanceled === false){
-    if (ifStateIs === ryu.state){
+    if (ifStateIs === player.state){
       console.log(GCDSL);
       resolve();
     }else{
       reject("canceled.");
     }
-    // SEND(function(err,data){
-    //   if (!err){
-    //     resolve(data);
-    //   }else{
-    //     reject({err:err, data:data});
-    //   }
-    // });
   });
 }
 
