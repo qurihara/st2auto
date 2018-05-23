@@ -1,2 +1,2 @@
-browserify app.js -o bundle.js
+sh browserify.
 beefy app.js --live --open
