@@ -75,16 +75,47 @@ var player = machina.Fsm.extend({
 
 async function main(){
   player = new player();
+
+  var connection = new WebSocket('ws://noderedqtest.azurewebsites.net/ws/alecon');
+  connection.onopen = function () {
+    console.log("websocket connected.");
+    // connection.send('Ping'); // Send the message 'Ping' to the server
+  };
+
+  connection.onerror = function (error) {
+    console.log('WebSocket Error ' + error);
+  };
+
+  connection.onmessage = async function (e) {
+    console.log('Server: ' + e.data);
+    switch( e.data ) {
+      case 'ソニック':
+        await player.shift('sonic');
+        break;
+      case 'サマソー':
+        await player.shift('summer');
+        break;
+      case '攻め':
+        await player.shift('attack');
+        break;
+      default: //case '様子見':
+        await player.shift('back');
+        break;
+    }
+    await player.fight();
+  };
+
   player.fight();
-  await wait(5000);
-  await player.shift('sonic');
-  await player.fight();
-  await wait(5000);
-  await player.shift('summer');
-  await player.fight();
-  await wait(5000);
-  await player.shift('attack');
-  await player.fight();
+  // await wait(5000);
+  // await player.shift('sonic');
+  // await player.fight();
+  // await wait(5000);
+  // await player.shift('summer');
+  // await player.fight();
+  // await wait(5000);
+  // await player.shift('attack');
+  // await player.fight();
+
 }
 main();
 
