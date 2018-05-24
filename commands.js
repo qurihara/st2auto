@@ -1,10 +1,10 @@
 exports.dslStr = function(pad,button,dur){
   var tNewAng = [0, 0, 0, 0]
   return JSON.stringify({
-        dpad : pad,
-        btn : button,
-        ang : tNewAng,
-        dur : dur
+        "dpad" : pad,
+        "btn" : button,
+        "ang" : tNewAng,
+        "dur" : dur
     });
 }
 exports.btns = {

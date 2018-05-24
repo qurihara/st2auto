@@ -4,17 +4,18 @@ var com = require('./commands.js');
 var player;
 
 var player = machina.Fsm.extend({
-  initialState: 'back',
+  initialState: 'sonic',
   states: {  // 状態を定義
     'back': {  // 各状態
       fight: async function() { // その状態が扱う振る舞い（関数）
         console.log('back mode');
         try{
           await send('back', com.dslStr(com.btns.left,com.btns.nobtn,-1));//"backing");
-          await wait(2000);
+          await wait(1500);
+          await send('back', com.dslStr(com.btns.right,com.btns.sp,2));//"backing");
           await send('back', com.dslStr(com.btns.right,com.btns.nobtn,-1));//"backing");
           await wait(1000);
-          await send('back', com.dslStr(com.btns.downleft,com.btns.lp,2));//"backing");
+          await send('back', com.dslStr(com.btns.downleft,com.btns.mk,2));//"backing");
           // await shift('back','back');
           await this.handle('fight');
         }catch (canceled) {}
@@ -27,7 +28,7 @@ var player = machina.Fsm.extend({
       fight: async function() {
         console.log('sonic mode');
         try{
-          await send('sonic', com.dslStr(com.btns.right,com.btns.lp,2));//"sonicboom!");
+          await send('sonic', com.dslStr(com.btns.right,com.btns.sp,2));//"sonicboom!");
           await send('sonic', com.dslStr(com.btns.downleft,com.btns.nobtn,-1));//"and machi!");
           await wait(2000);
           // await shift('sonic','sonic');
@@ -42,9 +43,9 @@ var player = machina.Fsm.extend({
       fight: async function() {
         console.log('summer mode');
         try{
-          await send('summer', com.dslStr(com.btns.up,com.btns.lk,2));// "summersolt!");
-          await send('summer', com.dslStr(com.btns.downleft,com.btns.nobtn,-1));// "and machi!");
+          await send('summer', com.dslStr(com.btns.downleft,com.btns.sk,-1));// "and machi!");
           await wait(2000);
+          await send('summer', com.dslStr(com.btns.up,com.btns.nobtn,2));// "summersolt!");
           // await shift('summer','summer');
           await this.handle('fight');
         }catch (canceled) {}
@@ -58,8 +59,12 @@ var player = machina.Fsm.extend({
         console.log('atack mode');
         try{
           await send('attack', com.dslStr(com.btns.upright,com.btns.nobtn,2));// "jump!");
-          await wait(500);
-          await send('attack', com.dslStr(com.btns.neutral,com.btns.lk,2));// "and attack!");
+          await wait(300);
+          await send('attack', com.dslStr(com.btns.upright,com.btns.sk,2));// "and attack!");
+          await wait(300);
+          await send('attack', com.dslStr(com.btns.downleft,com.btns.sk,2));// "and attack!");
+          await wait(300);
+          await send('attack', com.dslStr(com.btns.downleft,com.btns.lk,2));// "and attack!");
           await shift('attack','back');
           await this.handle('fight');
         }catch (canceled) {}
@@ -92,20 +97,25 @@ async function main(){
   connection.onmessage = async function (e) {
     console.log('Server: ' + e.data);
     switch( e.data ) {
-      case 'ソニック':
+      case '飛び道具':
         await player.shift('sonic');
+        await player.fight();
         break;
-      case 'サマソー':
+      case '対空迎撃':
         await player.shift('summer');
+        await player.fight();
         break;
-      case '攻め':
+      case '飛び込んで攻撃':
         await player.shift('attack');
+        await player.fight();
+        break;
+      case '揺さぶれ':
+        await player.shift('back');
+        await player.fight();
         break;
       default: //case '様子見':
-        await player.shift('back');
         break;
     }
-    await player.fight();
   };
 
   player.fight();
